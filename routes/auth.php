@@ -1,7 +1,5 @@
 <?php
 
-use App\Contracts\LoginService;
-use App\Contracts\SocialiteContractService;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -11,17 +9,8 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\ProviderCallbackController;
 use App\Http\Controllers\ProviderController;
-use App\Models\User;
-use Illuminate\Auth\Events\Login;
-use Illuminate\Console\Application;
-use Illuminate\Container\Attributes\Log;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
