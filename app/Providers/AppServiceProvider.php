@@ -14,10 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-       $this->app->bind(LoginService::class, function ($app){
-            return $this->app->make(SocialiteContractService::class, 
-            [ 'config' => ['github', 'google'] ] );
-       });
+        //
     }
     /**
      * Bootstrap any application services.

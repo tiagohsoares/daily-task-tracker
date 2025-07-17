@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\LoginService;
+use App\Contracts\SocialiteContractService;
 use Illuminate\Support\ServiceProvider;
 
 class LoginServiceProvider extends ServiceProvider
@@ -11,7 +13,10 @@ class LoginServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(LoginService::class, function (){
+            return $this->app->make(SocialiteContractService::class, 
+            [ 'config' => ['github', 'google'] ] );
+       });
     }
 
     /**

@@ -10,8 +10,7 @@ use Illuminate\Support\Str;
 
  class SocialiteContractService implements LoginService {
 
-    public function __construct(private array $config ){
-        }
+    public function __construct(private array $config ){}
 
     public function redirectToDriver(string $provider)
     {
