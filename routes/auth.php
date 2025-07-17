@@ -46,31 +46,10 @@ Route::middleware('guest')->group(function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
         
-    Route::get('auth/{provider}/callback', function (string $provider) {
-        try {
-        if (!in_array($provider, ['github', 'google'])){
-            throw new \InvalidArgumentException("Driver não é permitido.");
-        }
-        $service = app()->make(LoginService::class, ['driver' => $provider]);
-        return $service->handleProviderCallback($provider);
-
-        } catch (\Throwable $e) {
-            $e->getMessage();
-        }
+    Route::get('auth/{provider}/callback', [ProviderController::class, 'callback'], function () {
     });
         
-    Route::get('auth/{provider}/redirect', function ( string $provider) {
-        try {
-            if (!in_array($provider, ['github', 'google'])){
-                throw new \InvalidArgumentException("Driver não é permitido.");
-            }
-            $service = app()->make(LoginService::class, ['driver' => $provider]);
-            return $service->redirectToDriver($provider);
-
-        } catch (\Throwable $e) {
-            abort('404', 'Driver não suportado');
-        }
-       
+    Route::get('auth/{provider}/redirect',[ProviderController::class , 'redirect'], function () {
     });
 });
 

@@ -5,7 +5,7 @@ namespace App\Contracts;
 interface LoginService 
 
 {
-    public function redirectToDriver($provider);
-    public function handleProviderCallback($provider);
+    public function redirectToDriver(string $provider);
+    public function handleProviderCallback(string $provider);
 
 }
