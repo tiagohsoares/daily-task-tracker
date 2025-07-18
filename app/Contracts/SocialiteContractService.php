@@ -4,6 +4,7 @@ namespace App\Contracts;
 
 use App\Contracts\LoginService;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -25,7 +26,7 @@ use Illuminate\Support\Str;
         return Socialite::driver($provider)->redirect();
     }
     
-    public function handleProviderCallback(string $provider)
+    public function handleProviderCallback(string $provider) : RedirectResponse
     {
         try {
             if (!in_array($provider, $this->config)){
@@ -39,20 +40,31 @@ use Illuminate\Support\Str;
         $existingUser = User::where('email', $user->email)->first();
 
         if ($existingUser) {
+
+            $existingUser->update([
+
+                'provider'                  => $provider,
+                'provider_token'            => $user->token,
+                'provider_refresh_token'    => $user->refreshToken,
+
+            ]);
+
             Auth::login($existingUser);
+
         } else {
             $newUser = User::updateOrCreate([
                 'email' => $user->email
             ], [
                 'name'                      => $user->name,
-                'password'                  => bcrypt(Str::random(16)), 
-                'email_verified_at'         => now(),
+                'password'                  => bcrypt(Str::random(16)),
+                'provider'                  => $user->provider,
                 'provider_token'            => $user->token,
                 'provider_refresh_token'    => $user->refreshToken,
             ]);
+
             Auth::login($newUser);
         }
 
-        return redirect('/dashboard');
+        return redirect()->intended('/dashboard');
     }
 }
