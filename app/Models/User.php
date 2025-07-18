@@ -24,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'provider',
         'provider_id',
         'provider_token',
-        'provider_refresh_token',
+        'provider_refresh_token'
     ];
 
     /**
@@ -50,5 +50,10 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 }
