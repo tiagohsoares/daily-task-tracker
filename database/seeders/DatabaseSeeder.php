@@ -2,9 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Categories;
+use App\Enums\TaskFrequency;
+use App\Enums\TaskStatus;
+use App\Models\Category;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -16,25 +19,22 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         
-        Categories::factory(5)->create();
+        $user = User::factory()->create();
 
-        User::factory(20)->create()->each(function($user){
-        $categories = Categories::all();
+        $categories = Category::factory()->count(3)->for($user)->create();
 
-        foreach ($categories as $category) {
-            Task::factory()->create([
-                'user_id' => $user->id,
-                'category_id' => $category->id,
-            ]);
-        }
-    });
+        foreach($categories as $category){
+            $task = Task::all();
+            Task::factory()->count(10)->for($user)->for($categories)->state(new Sequence( 
+                    fn () => [  'status' => fake()->randomElement(TaskStatus::cases()),
+                                'frequency' => fake()->randomElement(TaskFrequency::cases())]
+                ))->create();
+            }
 
         User::factory()->create([
             'name' => 'Test User',
             'email' => env('USER_EMAIL', 'test@example.com'),
             'password' => env('USER_PASSWORD', 'password')
         ]);
-
-        
     }
 }

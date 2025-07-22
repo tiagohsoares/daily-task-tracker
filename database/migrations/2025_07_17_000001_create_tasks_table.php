@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('category_id')->references('id')->on('categories');
             $table->string('title')->primary();
             $table->text('description')->nullable();
             $table->dateTime('due_date');

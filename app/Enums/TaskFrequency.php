@@ -4,6 +4,6 @@ namespace App\Enums;
 
 enum TaskFrequency: string
 {
-    case Weekly = 'weekly';
-    case Monthly = 'monthly';
+    case weekly = 'WEEKLY';
+    case monthly = 'MONTHLY';
 }

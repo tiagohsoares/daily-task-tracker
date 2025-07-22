@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Categories;
+use App\Models\Category;
 use App\Models\User;
 use App\Enums\TaskStatus;
 use App\Enums\TaskFrequency;
@@ -22,12 +22,12 @@ class TaskFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'category_id' => Categories::factory(),
+            'category_id' => Category::factory(),
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
             'due_date' => now()->addDays(rand(1, 10)),
-            'frequency' => TaskFrequency::Weekly,
-            'status' => TaskStatus::Pending,
+            'frequency' => TaskFrequency::class,
+            'status' => TaskStatus::class,
         ];
     }
 }

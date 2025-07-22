@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id')->references('id')->on('users');
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();

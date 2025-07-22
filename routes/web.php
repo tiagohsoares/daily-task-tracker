@@ -21,10 +21,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('category')->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])->name('categories');
-    Route::put('/create', [CategoryController::class, 'create'])->name('categories.create');
-    Route::patch('/{id}/update', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('/{id}/destroy', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/', [CategoryController::class, 'index'])->name('category');
+    Route::put('/', [CategoryController::class, 'store'])->name('category.store');
+    Route::patch('/{id}', [CategoryController::class, 'update'])->name('category.update');
+    Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
 });
 
 require __DIR__.'/auth.php';
