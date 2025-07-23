@@ -17,19 +17,28 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        
-        $user = User::factory()->create();
+    { 
 
-        $categories = Category::factory()->count(3)->for($user)->create();
+        $users = User::factory(5)->create(
+            [
+                'password' => 'password',
+            ]
+        );
 
-        foreach($categories as $category){
-            $task = Task::all();
-            Task::factory()->count(10)->for($user)->for($categories)->state(new Sequence( 
-                    fn () => [  'status' => fake()->randomElement(TaskStatus::cases()),
-                                'frequency' => fake()->randomElement(TaskFrequency::cases())]
+
+        foreach ($users as $user) {
+            $categories = Category::factory(2)->for($user)->create();
+
+
+            foreach ($categories as $category) {
+                Task::factory()->for($user)->for($category)->state(new Sequence(
+                    fn() => [
+                        'status' => fake()->randomElement(TaskStatus::cases()),
+                        'frequency' => fake()->randomElement(TaskFrequency::cases())
+                    ]
                 ))->create();
             }
+        }
 
         User::factory()->create([
             'name' => 'Test User',
