@@ -55,10 +55,4 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Task::class);
     }
-
-    public function isAdmin(): bool
-    {
-        return true;
-        //return $this->tipo_perfil === "ADMINISTRATIVO";
-    }
 }
