@@ -22,9 +22,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->prefix('category')->group(function () {
     Route::get('/', [CategoryController::class, 'index'])->name('category.edit');
-    Route::put('/', [CategoryController::class, 'store'])->name('category.create');
-    Route::patch('/{id}', [CategoryController::class, 'update'])->name('category.update');
-    Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+    Route::post('/', [CategoryController::class, 'store'])->name('category.create');
+    Route::put('/update', [CategoryController::class, 'update'])->name('category.update');
+    Route::delete('/destroy', [CategoryController::class, 'destroy'])->name('category.destroy');
 });
 
 require __DIR__.'/auth.php';
