@@ -3,10 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\LoginService;
-use App\Contracts\SocialiteContractService;
-use App\Models\Category;
-use Illuminate\Console\Application;
+use app\Contracts\TaskService;
+use app\contracts\TaskContractService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(TaskService::class, function (){
+        $this->app->bind(TaskService::class, function (){
             return $this->app->make(TaskContractService::class);
         });
     }
