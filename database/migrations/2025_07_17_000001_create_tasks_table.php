@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
+            $table->id()->primary();
             $table->foreignId('user_id')->references('id')->on('users');
             $table->foreignId('category_id')->references('id')->on('categories');
-            $table->string('title')->primary();
+            $table->string('title');
             $table->text('description')->nullable();
             $table->dateTime('due_date');
             $table->enum('status', ['pending', 'completed', 'in_progress'])->default('pending');
