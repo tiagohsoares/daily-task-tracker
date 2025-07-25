@@ -2,35 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\TaskContractService;
-use App\Http\Requests\Category\ViewCategoryRequest;
-use App\Http\Requests\CategoryStoreRequest;
-use App\Models\Category;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
-    
     {
-        $user = Auth::user();
-        $categories = DB::select('select id, name from categories where user_id = :id', ['id' => $user->id]);
-        return view('category.edit', ['categories' => $categories]);
+        //
     }
 
-    public function store(int $id, CategoryStoreRequest $request, TaskContractService $TaskService) {
-            $TaskService->findTask($id);
-            $request->user();
-            return view('category.edit', [$TaskService]);
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 
-    public function update(CategoryStoreRequest $request, TaskContractService $TaskService) {
-            $request->user();
-            return view('category.edit', [$TaskService]);
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
     }
 
-    public function destroy(int $id, CategoryStoreRequest $request, TaskContractService $TaskService) {}
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
 }
