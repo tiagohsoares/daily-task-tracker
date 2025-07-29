@@ -30,7 +30,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('task.form', ['task' => new Task()]);
     }
 
     /**
@@ -47,7 +47,7 @@ class TaskController extends Controller
             'frequency'     =>  ['required', new \Illuminate\Validation\Rules\Enum(TaskFrequency::class)],
         ]);
 
-        $category = Category::firstOrCreate([
+        $categories = Category::firstOrCreate([
             'name' => $validated['name'],
             'user_id' => Auth::id(),
         ]);
@@ -61,7 +61,7 @@ class TaskController extends Controller
         ]);
 
 
-        return redirect()->route('dashboard')->with('success', 'Categoria criada!');
+        return redirect('dashboard')->with('success', 'Task criada!');
     }
 
     /**
@@ -69,7 +69,8 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $tasks = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
+        return view('category.show', compact('tasks'));
     }
 
     /**
@@ -83,14 +84,18 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id)    
     {
-        Task::where('id', $id)
-            ->update([
-                'title' => $request->name
+        Category::where('id', $id)
+            ->updateOrFail([
+                'title'         => $request->title,
+                'description'   => $request->description,
+                'due_date'      => $request->due_date,
+                'status'        => $request->status,
+                'frequency'     => $request->frequency,
             ]);
 
-        return redirect()->intended('category')->with('success', 'categoria atualizada');
+        return redirect('dashboard')->with('success', 'task atualizada');
     }
 
     /**
@@ -99,6 +104,6 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         Task::destroy($id);
-        return redirect()->intended('dashboard')->with('success', 'task deletada');
+        return redirect('dashboard')->with('success', 'task deletada');
     }
 }
