@@ -3,7 +3,6 @@
     @include('shared.success-message')
     <title>{{$category->name}}</title>
     <div class="inline-flex flex-wrap align-middle items-center">
-        <span class="text-blue-700"> Criar Categoria </span>
     @include('category.form')
 
     <x-modal name="category-deletion" focusable>
