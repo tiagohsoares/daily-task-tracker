@@ -11,7 +11,7 @@ enum TaskStatus: string
  public function view(){
     return match ($this) {
         self::pending => 'components.pending',
-        self::in_progress => 'components.in-progress',
+        self::in_progress => 'components.in_progress',
         self::completed => 'components.completed',
     };
 }

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->dateTime('due_date');
             $table->enum('status', ['pending', 'completed', 'in_progress'])->default('pending');
             $table->enum('frequency', [ 'weekly' , 'monthly' ])->nullable();
+            $table->datetime('completed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
