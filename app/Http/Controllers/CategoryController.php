@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class CategoryController extends Controller
 {
     /**
@@ -32,14 +34,13 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
         $validated = $request->validate([
             'name' => 'required|string|max:255'
         ]);
 
         Category::create([
             'name' => $validated['name'],
-            'user_id' => Auth::user()->id,
+            'user_id' => Auth::id(),
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Categoria criada!');
@@ -48,7 +49,7 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id, TaskContractService $taskContractService)
+    public function show(string $id)
     {
         $category = Category::where('id', $id)->where('user_id', Auth::id())->firstorFail();
         return view('category.show', ['category' => $category]);

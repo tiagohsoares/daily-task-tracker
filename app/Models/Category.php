@@ -10,15 +10,20 @@ class Category extends Model
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name', 
+        'user_id'
+    ];
 
-    public function tasks(){
+    public function tasks()
+    {
 
         return $this->hasMany(Task::class);
     }
 
-    public function user(){
+    public function user()
+    {
 
-        return $this->belongsTo(User::class); 
+        return $this->belongsTo(User::class);
     }
 }
