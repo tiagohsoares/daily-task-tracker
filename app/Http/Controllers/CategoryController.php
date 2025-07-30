@@ -18,7 +18,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::where('user_id', Auth::id())->get();
+        $categories = Category::whereBelongsTo(Auth::user())->get();
         return view('category.index', compact('categories'));
     }
 
@@ -86,7 +86,6 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         Category::destroy($id);
-
-        return redirect()->intended('category')->with('success', 'categoria deletada');
+        return redirect('category')->with('success', 'categoria deletada');
     }
 }

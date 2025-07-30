@@ -9,6 +9,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\Enum;
 
 class TaskController extends Controller
 {
@@ -17,12 +18,11 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = DB::table('tasks')
-            ->join('categories', 'tasks.category_id', '=', 'categories.id')
-            ->where('tasks.user_id', '=', Auth::id())
+        $tasks = Task::with("category")
+            ->whereBelongsTo(Auth::user())
             ->orderBy('due_date')
             ->get();
-        return view('dashboard', compact('tasks'));
+        return view('dashboard', compact(['tasks']));
     }
 
     /**
@@ -30,7 +30,8 @@ class TaskController extends Controller
      */
     public function create()
     {
-        return view('task.form', ['task' => new Task()]);
+        $categories = Category::where('user_id', Auth::id())->get();
+        return view('task.form', ['task' => new Task(), 'categories' => $categories]);
     }
 
     /**
@@ -40,16 +41,11 @@ class TaskController extends Controller
     {
         $validated = $request->validate([
             'title'         => 'required|string|max:255',
-            'name'          => 'required|string|max:255',
+            'category_id'   => 'required|exists:categories,id',
             'description'   => 'nullable|string|max:255',
-            'due_date'      => 'required|date_format:Y-m-d H:i:s',
-            'status'        =>  ['required', new \Illuminate\Validation\Rules\Enum(TaskStatus::class)],
-            'frequency'     =>  ['required', new \Illuminate\Validation\Rules\Enum(TaskFrequency::class)],
-        ]);
-
-        $categories = Category::firstOrCreate([
-            'name' => $validated['name'],
-            'user_id' => Auth::id(),
+            'due_date'      => 'required|date_format:Y-m-d\TH:i',
+            'status'        =>  ['required', new Enum(TaskStatus::class)],
+            'frequency'     =>  ['required', new Enum(TaskFrequency::class)],
         ]);
 
         $tasks = Task::create([
@@ -57,7 +53,9 @@ class TaskController extends Controller
             'description'   => $validated['description'],
             'due_date'      => $validated['due_date'],
             'status'        => $validated['status'],
-            'frequency'     => $validated['frequency']
+            'frequency'     => $validated['frequency'],
+            'user_id'       => Auth::id(),
+            'category_id'   => $validated['category_id']
         ]);
 
 
@@ -69,8 +67,8 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        $tasks = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
-        return view('category.show', compact('tasks'));
+        $task = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
+        return view('task.show', compact(['task']));
     }
 
     /**

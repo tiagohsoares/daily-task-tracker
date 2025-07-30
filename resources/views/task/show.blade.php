@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Categoria: ') . $category->name }}
+            {{ __('Task: ') . $task->title }}
         </h2>
     </x-slot>
 
@@ -13,7 +13,7 @@
 
                 {{-- Formulário de edição da categoria --}}
                 <div class="mb-6">
-                    @include('category.form')
+                    @include('task.form')
                 </div>
 
                 {{-- Ações --}}
@@ -39,7 +39,7 @@
                     Cancelar
                 </x-secondary-button>
 
-                <form method="POST" action="{{ route('category.destroy', $category->id) }}">
+                <form method="POST" action="{{ route('task.destroy', $task->id) }}">
                     @csrf
                     @method('delete')
                     <x-danger-button>
@@ -50,3 +50,4 @@
         </div>
     </x-modal>
 </x-app-layout>
+

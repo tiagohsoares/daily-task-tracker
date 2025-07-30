@@ -23,4 +23,9 @@ Route::middleware('auth')->group( function () {
     Route::resource('category', CategoryController::class);
 });
 
+Route::middleware('auth')->group( function () {
+    Route::resource('task', TaskController::class)
+    ->except('index');
+});
+
 require __DIR__.'/auth.php';
