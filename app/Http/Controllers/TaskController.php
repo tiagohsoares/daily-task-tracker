@@ -31,7 +31,11 @@ class TaskController extends Controller
     public function create()
     {
         $categories = Category::where('user_id', Auth::id())->get();
-        return view('task.form', ['task' => new Task(), 'categories' => $categories]);
+        if ($categories->isEmpty()) {
+            return redirect('dashboard')->with('failed', 'Nenhuma categoria encontrada');
+        } else {
+            return view('task.form', ['task' => new Task(), 'categories' => $categories]);
+        }
     }
 
     /**
@@ -40,26 +44,27 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title'         => 'required|string|max:255',
-            'category_id'   => 'required|exists:categories,id',
-            'description'   => 'nullable|string|max:255',
-            'due_date'      => 'required|date_format:Y-m-d\TH:i',
-            'status'        =>  ['required', new Enum(TaskStatus::class)],
-            'frequency'     =>  ['required', new Enum(TaskFrequency::class)],
-        ]);
-
-        $tasks = Task::create([
-            'title'         => $validated['title'],
-            'description'   => $validated['description'],
-            'due_date'      => $validated['due_date'],
-            'status'        => $validated['status'],
-            'frequency'     => $validated['frequency'],
-            'user_id'       => Auth::id(),
-            'category_id'   => $validated['category_id']
+            'title' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
+            'description' => 'nullable|string|max:255',
+            'due_date' => 'required|date_format:Y-m-d\TH:i:s',
+            'status' => ['required', new Enum(TaskStatus::class)],
+            'frequency' => ['required', new Enum(TaskFrequency::class)],
         ]);
 
 
-        return redirect('dashboard')->with('success', 'Task criada!');
+
+        Task::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'due_date' => $validated['due_date'],
+            'status' => $validated['status'],
+            'frequency' => $validated['frequency'],
+            'user_id' => Auth::id(),
+            'category_id' => $validated['category_id']
+        ]);
+
+        return redirect('dashboard')->with('success', 'Tarefa criada com sucesso!');
     }
 
     /**
@@ -68,7 +73,8 @@ class TaskController extends Controller
     public function show(string $id)
     {
         $task = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
-        return view('task.show', compact(['task']));
+        $categories = Category::where('user_id', Auth::id())->get();
+        return view('task.show', compact(['task', 'categories']));
     }
 
     /**
@@ -82,18 +88,18 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)    
+    public function update(Request $request, string $id)
     {
-        Category::where('id', $id)
-            ->updateOrFail([
-                'title'         => $request->title,
-                'description'   => $request->description,
-                'due_date'      => $request->due_date,
-                'status'        => $request->status,
-                'frequency'     => $request->frequency,
+        Task::where('id', $id)
+            ->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'due_date' => $request->due_date,
+                'status' => $request->status,
+                'frequency' => $request->frequency,
             ]);
 
-        return redirect('dashboard')->with('success', 'task atualizada');
+        return redirect('dashboard')->with('success', 'Tarefa atualizada');
     }
 
     /**
@@ -102,6 +108,6 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         Task::destroy($id);
-        return redirect('dashboard')->with('success', 'task deletada');
+        return redirect('dashboard')->with('success', 'Tarefa deletada');
     }
 }

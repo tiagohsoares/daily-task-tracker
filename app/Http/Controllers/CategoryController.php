@@ -43,7 +43,7 @@ class CategoryController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Categoria criada!');
+        return redirect('category')->with('success', 'Categoria criada!');
     }
 
     /**
@@ -77,7 +77,7 @@ class CategoryController extends Controller
                 'name' => $request->name
             ]);
 
-        return redirect()->intended('category')->with('success', 'categoria atualizada');
+        return redirect()->intended('category')->with('success', 'Categoria atualizada!');
     }
 
     /**
@@ -86,6 +86,6 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         Category::destroy($id);
-        return redirect('category')->with('success', 'categoria deletada');
+        return redirect('category')->with('success', 'Categoria deletada!');
     }
 }

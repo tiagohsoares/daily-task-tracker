@@ -13,9 +13,20 @@ class Task extends Model
     /** @use HasFactory<\Database\Factories\TaskFactory> */
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'due_date',
+        'status',
+        'frequency',
+        'user_id',
+        'category_id'
+    ];
+
     protected $casts = [
         'status' => TaskStatus::class,
-        'frequency' => TaskFrequency::class
+        'frequency' => TaskFrequency::class,
+        'due_date' => 'datetime'
     ];
 
     public function user()
