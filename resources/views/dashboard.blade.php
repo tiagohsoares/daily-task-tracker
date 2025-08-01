@@ -5,6 +5,19 @@
             {{ __('Tasks') }}
         </h2>
     </x-slot>
+
+    <form method="GET" action="{{ route('dashboard') }}">
+        <label for="status">Filter by status:</label>
+        <select name="status" id="status" onchange="this.form.submit()">
+            <option value="">Status</option>
+            @foreach (App\Enums\TaskStatus::cases() as $status)
+                <option value={{ $status->value }}>
+                    {{ $status->name }}
+                </option>
+            @endforeach
+        </select>
+    </form>
+
     <section>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

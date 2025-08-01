@@ -16,13 +16,20 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $tasks = Task::with("category")
             ->whereBelongsTo(Auth::user())
             ->orderBy('due_date')
             ->get();
-        return view('dashboard', compact(['tasks']));
+
+        $taskStatus = $request->input('status');
+
+        if ($taskStatus) {
+            $tasks = $tasks->where('status', $taskStatus);
+        }
+        
+        return view('dashboard', compact(['tasks', 'taskStatus']));
     }
 
     /**
