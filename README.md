@@ -45,7 +45,7 @@ Clone o repositório:
 ```bash
 git clone git@github.com:tiagohsoares/daily-task-tracker-.git
 cd daily-task-tracker
-````
 composer install
 php artisan key:generate
 ./vendor/bin/sail up -d
+````
