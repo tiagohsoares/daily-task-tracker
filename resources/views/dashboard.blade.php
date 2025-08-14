@@ -7,13 +7,11 @@
         </h2>
     </x-slot>
 
-    {{-- GRID DE DOIS LADOS --}}
     <div class="max-w-7xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {{-- COLUNA 1: FILTRO + RESUMO + GRÁFICO --}}
             <div class="lg:col-span-1 space-y-6 justify-end">
-                {{-- Filtro --}}
+        
                 <form method="GET" action="{{ route('dashboard') }}" class="flex flex-wrap items-center gap-4">
                     <label for="status" class="text-gray-700 dark:text-gray-300 font-medium">
                         Filtrar por status:
@@ -91,20 +89,25 @@
                                     <div
                                         class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm hover:shadow-md transition">
                                         <div class="flex justify-between items-center">
-                                            <div>
+                                            <div class="flex justify-between items-center space-x-3">
                                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                                                    {{ $task->title }}
+                                                    {{ $task->title }} 
                                                 </h2>
-                                                <p class="text-sm text-gray-500 dark:text-gray-300">
+                                                <h3 class="text-base text-gray-500 dark:text-gray-300">
                                                     {{ $task->category->name ?? 'Sem categoria' }}
-                                                </p>
+                                                </h3>
                                             </div>
+                                                
                                             <span
-                                                class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($task->due_date)->format('d/m') }}</span>
+                                                class="text-base text-gray-500">Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d/m') }}</span>
                                         </div>
 
+                                        <h3 class="text-sm text-gray-500 dark:text-gray-300">
+                                            {{ $task->description ?? '' }}
+                                        </h3>
+
                                         <div class="flex justify-between items-center mt-3 text-sm">
-                                            <div class="flex items-center space-x-3">
+                                            <div class="flex items-center space-x-2">
                                                 @include($task->status->view())
                                                 @include($task->frequency->view())
                                             </div>
@@ -122,7 +125,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -181,9 +183,10 @@
                         }
                     }
                 };
-
                 new Chart(ctx, config);
             </script>
         @endpush
     @endif
+
+    
 </x-app-layout>
