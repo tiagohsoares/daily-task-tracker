@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum TaskStatus: string
 {
-    case pending = 'pending';
-    case in_progress = 'in_progress';
-    case completed = 'completed';
+    case pending = 'PENDING';
+    case in_progress = 'IN PROGRESS';
+    case completed = 'COMPLETED';
 
  public function view(){
     return match ($this) {
