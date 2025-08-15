@@ -1,3 +1,4 @@
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 <div class="py-12">
     <div class="max-w-xl mx-auto bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
         <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">
@@ -49,18 +50,20 @@
                     value="{{  old('due_date', $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('Y-m-d\TH:i') : now()) }}"
                     required
                     class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"><br>
-                <input type="radio" id="weekly" name="frequency" value="weekly">
+                <input type="radio" id="weekly" name="frequency" value="WEEKLY">
                 <label for="weekly">Weekly</label>
-                <input type="radio" id="monthly" name="frequency" value="monthly">
+                <input type="radio" id="monthly" name="frequency" value="MONTHLY">
                 <label for="monthly">Monthly</label><br>
+                <input type="radio" id="daily" name="frequency" value="DAILY">
+                <label for="daily">Daily</label><br>
                 @error('frequency')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
-                <input type="radio" id="pending" name="status" value="pending">
+                <input type="radio" id="pending" name="status" value="PENDING">
                 <label for="pending">Pending</label>
-                <input type="radio" id="in_progress" name="status" value="in_progress">
+                <input type="radio" id="in_progress" name="status" value="IN PROGRESS">
                 <label for="in_progress">In Progress</label>
-                <input type="radio" id="completed" name="status" value="completed">
+                <input type="radio" id="completed" name="status" value="COMPLETED">
                 <label for="completed">Completed</label>
                 @error('status')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

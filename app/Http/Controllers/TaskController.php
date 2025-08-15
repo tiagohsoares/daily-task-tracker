@@ -23,13 +23,15 @@ class TaskController extends Controller
             ->orderBy('due_date')
             ->get();
 
-        $taskStatus = $request->input('status');
+        if ($request->input('status')) {
+            $tasks = $tasks->where('status', $request->input('status'));
+        }
 
-        if ($taskStatus) {
-            $tasks = $tasks->where('status', $taskStatus);
+        if ($request->input('frequência')){
+            $tasks = $tasks->where('frequency', $request->input('frequência'));
         }
         
-        return view('dashboard', compact(['tasks', 'taskStatus']));
+        return view('dashboard', compact(['tasks']));
     }
 
     /**
