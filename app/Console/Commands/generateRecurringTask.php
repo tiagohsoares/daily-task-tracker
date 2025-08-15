@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Enums\TaskFrequency;
 use App\Enums\TaskStatus;
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class generateRecurringTask extends Command
@@ -28,25 +29,46 @@ class generateRecurringTask extends Command
      */
     public function handle()
     {
-        $today = today();
 
-        $tasks = Task::where('due_date', '<', $today)->get();
+        $tasks = Task::where('due_date', '<', today())->get();
 
         foreach ($tasks as $task) {
-            switch ($task->frequency) {
-                case TaskFrequency::daily
-                :
-                    Task::update(['due_date' => $today->copy()->addDay()]);
-                case TaskFrequency::weekly
-                :
-                    Task::update(['due_date' => $today->copy()->addDays(7)]);
-                case TaskFrequency::monthly
-                :
-                    Task::update(['due_date' => $today->copy()->subMonth()]);
+
+            $nextDate = $this->getNextDueDate($task->due_date, $task->frequency);
+
+            if ($nextDate) {
+                $task->update([
+                    'due_date' => $nextDate,
+                    'status' => TaskStatus::pending
+                ]);
             }
-            Task::update(['status'=> TaskStatus::pending]);
         }
+
         $this->info("Tarefas recorrentes atualizadas");
         return \Symfony\Component\Console\Command\Command::SUCCESS;
+    }
+
+    private function getNextDueDate($lastDueDate, $taskFrequency)
+    {
+        $date = Carbon::parse($lastDueDate);
+        switch ($taskFrequency) {
+            case TaskFrequency::daily
+            :
+                while ($date->lt(today()))
+                    $date->addDay();
+                break;
+            case TaskFrequency::weekly
+            :
+                while ($date->lt(today()))
+                    $date->addWeek();
+                break;
+            case TaskFrequency::monthly
+            :
+                while ($date->lt(today()))
+                    $date->addMonth();
+                break;
+        }
+
+        return $date;
     }
 }

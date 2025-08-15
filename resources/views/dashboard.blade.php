@@ -11,18 +11,31 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
             <div class="lg:col-span-1 space-y-6 justify-end">
-        
+
                 <form method="GET" action="{{ route('dashboard') }}" class="flex flex-wrap items-center gap-4">
                     <label for="status" class="text-gray-700 dark:text-gray-300 font-medium">
-                        Filtrar por status:
+                        Status:
                     </label>
 
                     <select name="status" id="status" onchange="this.form.submit()"
                         class="w-52 sm:w-60 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 px-3 py-2 shadow-sm">
-                        <option value="">Todos os status</option>
+                        <option value="">Selecione o status</option>
                         @foreach (App\Enums\TaskStatus::cases() as $status)
                             <option value="{{ $status->value }}" {{ request('status') === $status->value ? 'selected' : '' }}>
                                 {{ $status->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <label for="Frequência" class="text-gray-700 dark:text-gray-300 font-medium">
+                        Frequência:
+                    </label>
+                    <select name="frequência" id="frequência" onchange="this.form.submit()"
+                        class="w-52 sm:w-60 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 px-3 py-2 shadow-sm">
+                        <option value="">Selecione a frequência</option>
+                        @foreach (App\Enums\TaskFrequency::cases() as $frequência)
+                            <option value="{{ $frequência->value }}" {{ request('frequência') === $frequência->value ? 'selected' : '' }}>
+                                {{ $frequência->name }}
                             </option>
                         @endforeach
                     </select>
@@ -63,13 +76,13 @@
                     <canvas id="myChart" height="180"></canvas>
                 </div>
             </div>
-            
+
             <div class="lg:col-span-2">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         @if($tasks->isEmpty())
                             <div class="flex justify-between items-center">
-                                <h1 class="text-lg text-gray-600 dark:text-gray-300">Nenhuma tarefa cadastrada</h1>
+                                <h5 id="mensagem" class="text-lg text-gray-600 dark:text-gray-300">Nenhuma tarefa cadastrada</h5>
                                 <a href="{{route('task.create')}}"
                                     class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
                                     Criar Tarefa
@@ -91,15 +104,15 @@
                                         <div class="flex justify-between items-center">
                                             <div class="flex justify-between items-center space-x-3">
                                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                                                    {{ $task->title }} 
+                                                    {{ $task->title }}
                                                 </h2>
                                                 <h3 class="text-base text-gray-500 dark:text-gray-300">
                                                     {{ $task->category->name ?? 'Sem categoria' }}
                                                 </h3>
                                             </div>
-                                                
-                                            <span
-                                                class="text-base text-gray-500">Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d/m') }}</span>
+
+                                            <span class="text-base text-gray-500">Due:
+                                                {{ \Carbon\Carbon::parse($task->due_date)->format('d/m') }}</span>
                                         </div>
 
                                         <h3 class="text-sm text-gray-500 dark:text-gray-300">
@@ -140,9 +153,9 @@
                     datasets: [{
                         label: 'Tarefas',
                         data: [
-                                    {{ $tasks->count() }},
-                                    {{ $tasks->where('due_date', '<', now()->addDays(8))->count() }},
-                                    {{ $tasks->where('status', 'completed')->count() }},
+                                            {{ $tasks->count() }},
+                                            {{ $tasks->where('due_date', '<', now()->addDays(8))->count() }},
+                                            {{ $tasks->where('status', 'completed')->count() }},
                             {{ $tasks->where('status', 'pending')->count() }}
                         ],
                         backgroundColor: [
@@ -188,5 +201,5 @@
         @endpush
     @endif
 
-    
+
 </x-app-layout>
