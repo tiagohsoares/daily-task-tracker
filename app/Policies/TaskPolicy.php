@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Policies\Category;
+namespace App\Policies;
 
-use App\Models\Category;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Auth;
 
-class CategoryPolice
+class TaskPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user): bool
+    public function view(User $user, Task $task): bool
     {
         return true;
-        //return auth()->user()->isAdmin();
     }
 
     /**
@@ -30,21 +30,21 @@ class CategoryPolice
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Category $category): bool
+    public function update(User $user, Task $task): bool
     {
-        return false;
+        return $user->id === $task->user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Category $category): bool
+    public function delete(User $user, Task $task): bool
     {
         return false;
     }
@@ -52,7 +52,7 @@ class CategoryPolice
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Category $category): bool
+    public function restore(User $user, Task $task): bool
     {
         return false;
     }
@@ -60,7 +60,7 @@ class CategoryPolice
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Category $category): bool
+    public function forceDelete(User $user, Task $task): bool
     {
         return false;
     }

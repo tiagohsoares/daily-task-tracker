@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\TaskFrequency;
 use App\Enums\TaskStatus;
+use App\Http\Requests\Task\TaskRequest;
 use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -50,18 +51,9 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'description' => 'nullable|string|max:255',
-            'due_date' => 'required|date_format:Y-m-d\TH:i:s',
-            'status' => ['required', new Enum(TaskStatus::class)],
-            'frequency' => ['required', new Enum(TaskFrequency::class)],
-        ]);
-
-
+        $validated = $request->validated();
 
         Task::create([
             'title' => $validated['title'],

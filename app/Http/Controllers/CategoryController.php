@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\TaskContractService;
+use App\Http\Requests\Category\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,11 +31,9 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255'
-        ]);
+        $validated = $request->validated();
 
         Category::create([
             'name' => $validated['name'],
@@ -60,11 +57,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        $category = Category::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
-
-        return view('category.form', compact('category'));
+        return abort(401);
     }
 
     /**
