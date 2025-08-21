@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    { 
+    {
 
         $users = User::factory(5)->create(
             [
@@ -45,5 +45,6 @@ class DatabaseSeeder extends Seeder
             'email' => env('USER_EMAIL', 'test@example.com'),
             'password' => env('USER_PASSWORD', 'password')
         ]);
+
     }
 }

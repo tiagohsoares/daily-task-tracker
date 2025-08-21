@@ -6,8 +6,8 @@ use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('login');
-});
+    return view('welcome');
+})->middleware('guest');
 
 Route::middleware(['auth', 'verified'])->group (function () {
     Route::get('/dashboard', [TaskController::class, 'index'])->name('dashboard');
