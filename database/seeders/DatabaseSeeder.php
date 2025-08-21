@@ -43,5 +43,6 @@ class DatabaseSeeder extends Seeder
             'email' => env('USER_EMAIL', 'test@example.com'),
             'password' => env('USER_PASSWORD', 'password'),
         ]);
+
     }
 }

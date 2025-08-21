@@ -21,7 +21,8 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle: 5,1');
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        ->middleware('throttle: 5,1');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
@@ -38,7 +39,7 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/{provider}/callback', [ProviderController::class, 'callback'])
         ->name('google.callback');
 
-    Route::get('auth/{provider}/redirect', [ProviderController::class, 'redirect'])
+    Route::get('auth/{provider}/redirect', [ProviderController::class , 'redirect'])
         ->name('google.redirect');
 });
 
@@ -63,5 +64,5 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-
 });
+
