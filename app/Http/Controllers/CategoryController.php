@@ -8,8 +8,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
-
 class CategoryController extends Controller
 {
     /**
@@ -18,6 +16,7 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::whereBelongsTo(Auth::user())->get();
+
         return view('category.index', compact('categories'));
     }
 
@@ -26,8 +25,9 @@ class CategoryController extends Controller
      */
     public function create(): View
     {
-        return view('category.form', ['category' => new Category()]);
+        return view('category.form', ['category' => new Category]);
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -49,6 +49,7 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         $category = Category::where('id', $id)->where('user_id', Auth::id())->firstorFail();
+
         return view('category.show', ['category' => $category]);
     }
 
@@ -67,7 +68,7 @@ class CategoryController extends Controller
     {
         Category::where('id', $id)
             ->update([
-                'name' => $request->name
+                'name' => $request->name,
             ]);
 
         return redirect()->intended('category')->with('success', 'Categoria atualizada!');
@@ -79,6 +80,7 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         Category::destroy($id);
+
         return redirect('category')->with('success', 'Categoria deletada!');
     }
 }
