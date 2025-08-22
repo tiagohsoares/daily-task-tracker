@@ -6,10 +6,10 @@ use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('login');
+    return view('welcome');
 });
 
-Route::middleware(['auth', 'verified'])->group (function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [TaskController::class, 'index'])->name('dashboard');
 });
 
@@ -19,13 +19,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware('auth')->group( function () {
+Route::middleware('auth')->group(function () {
     Route::resource('category', CategoryController::class);
 });
 
-Route::middleware('auth')->group( function () {
+Route::middleware('auth')->group(function () {
     Route::resource('task', TaskController::class)
-    ->except('index');
+        ->except('index');
 });
 
 require __DIR__.'/auth.php';

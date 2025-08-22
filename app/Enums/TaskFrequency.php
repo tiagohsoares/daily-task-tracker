@@ -8,7 +8,8 @@ enum TaskFrequency: string
     case monthly = 'MONTHLY';
     case daily = 'DAILY';
 
-    public function view(){
+    public function view()
+    {
         return match ($this) {
             self::weekly => 'components.weekly',
             self::monthly => 'components.monthly',

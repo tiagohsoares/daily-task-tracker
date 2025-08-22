@@ -31,7 +31,7 @@ class TaskRequest extends FormRequest
             'due_date' => [
                 'required',
                 Rule::date()->afterOrEqual(today()),
-                Rule::date()->format('Y-m-d\TH:i:s')
+                Rule::date()->format('Y-m-d\TH:i:s'),
             ],
             'status' => ['required', Rule::enum(TaskStatus::class)],
             'frequency' => ['required', Rule::enum(TaskFrequency::class)],

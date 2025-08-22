@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\TaskFrequency;
-use App\Enums\TaskStatus;
 use App\Http\Requests\Task\TaskRequest;
 use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Enum;
 
 class TaskController extends Controller
 {
@@ -19,7 +15,7 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $tasks = Task::with("category")
+        $tasks = Task::with('category')
             ->whereBelongsTo(Auth::user())
             ->orderBy('due_date')
             ->get();
@@ -28,10 +24,10 @@ class TaskController extends Controller
             $tasks = $tasks->where('status', $request->input('status'));
         }
 
-        if ($request->input('frequência')){
+        if ($request->input('frequência')) {
             $tasks = $tasks->where('frequency', $request->input('frequência'));
         }
-        
+
         return view('dashboard', compact(['tasks']));
     }
 
@@ -44,7 +40,7 @@ class TaskController extends Controller
         if ($categories->isEmpty()) {
             return redirect('dashboard')->with('failed', 'Nenhuma categoria encontrada');
         } else {
-            return view('task.form', ['task' => new Task(), 'categories' => $categories]);
+            return view('task.form', ['task' => new Task, 'categories' => $categories]);
         }
     }
 
@@ -62,7 +58,7 @@ class TaskController extends Controller
             'status' => $validated['status'],
             'frequency' => $validated['frequency'],
             'user_id' => Auth::id(),
-            'category_id' => $validated['category_id']
+            'category_id' => $validated['category_id'],
         ]);
 
         return redirect('dashboard')->with('success', 'Tarefa criada com sucesso!');
@@ -75,6 +71,7 @@ class TaskController extends Controller
     {
         $task = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
         $categories = Category::where('user_id', Auth::id())->get();
+
         return view('task.show', compact(['task', 'categories']));
     }
 
@@ -109,6 +106,7 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         Task::destroy($id);
+
         return redirect('dashboard')->with('success', 'Tarefa deletada');
     }
 }

@@ -20,13 +20,13 @@ class Task extends Model
         'status',
         'frequency',
         'user_id',
-        'category_id'
+        'category_id',
     ];
 
     protected $casts = [
         'status' => TaskStatus::class,
         'frequency' => TaskFrequency::class,
-        'due_date' => 'datetime'
+        'due_date' => 'datetime',
     ];
 
     public function user()

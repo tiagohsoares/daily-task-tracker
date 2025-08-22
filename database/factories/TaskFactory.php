@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\TaskFrequency;
+use App\Enums\TaskStatus;
 use App\Models\Category;
 use App\Models\User;
-use App\Enums\TaskStatus;
-use App\Enums\TaskFrequency;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
