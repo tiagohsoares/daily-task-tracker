@@ -25,15 +25,15 @@ class TaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string|max:255',
-            'due_date' => [
+            'due_date'    => [
                 'required',
                 Rule::date()->afterOrEqual(today()),
                 Rule::date()->format('Y-m-d\TH:i:s'),
             ],
-            'status' => ['required', Rule::enum(TaskStatus::class)],
+            'status'    => ['required', Rule::enum(TaskStatus::class)],
             'frequency' => ['required', Rule::enum(TaskFrequency::class)],
         ];
     }

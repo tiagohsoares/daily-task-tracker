@@ -10,7 +10,9 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteContractService implements LoginService
 {
-    public function __construct(private array $config) {}
+    public function __construct(private readonly array $config)
+    {
+    }
 
     public function redirectToDriver(string $provider)
     {
@@ -42,8 +44,8 @@ class SocialiteContractService implements LoginService
 
             $existingUser->update([
 
-                'provider' => $provider,
-                'provider_token' => $user->token,
+                'provider'               => $provider,
+                'provider_token'         => $user->token,
                 'provider_refresh_token' => $user->refreshToken,
 
             ]);
@@ -54,10 +56,10 @@ class SocialiteContractService implements LoginService
             $newUser = User::updateOrCreate([
                 'email' => $user->email,
             ], [
-                'name' => $user->name,
-                'password' => bcrypt(Str::random(16)),
-                'provider' => $user->provider,
-                'provider_token' => $user->token,
+                'name'                   => $user->name,
+                'password'               => bcrypt(Str::random(16)),
+                'provider'               => $user->provider,
+                'provider_token'         => $user->token,
                 'provider_refresh_token' => $user->refreshToken,
             ]);
 

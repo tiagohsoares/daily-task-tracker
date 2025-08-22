@@ -4,16 +4,16 @@ namespace App\Enums;
 
 enum TaskFrequency: string
 {
-    case weekly = 'WEEKLY';
+    case weekly  = 'WEEKLY';
     case monthly = 'MONTHLY';
-    case daily = 'DAILY';
+    case daily   = 'DAILY';
 
     public function view()
     {
         return match ($this) {
-            self::weekly => 'components.weekly',
+            self::weekly  => 'components.weekly',
             self::monthly => 'components.monthly',
-            self::daily => 'components.daily'
+            self::daily   => 'components.daily'
         };
     }
 }

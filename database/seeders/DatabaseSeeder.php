@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             foreach ($categories as $category) {
                 Task::factory()->for($user)->for($category)->state(new Sequence(
                     fn () => [
-                        'status' => fake()->randomElement(TaskStatus::cases()),
+                        'status'    => fake()->randomElement(TaskStatus::cases()),
                         'frequency' => fake()->randomElement(TaskFrequency::cases()),
                     ]
                 ))->create();
@@ -39,8 +39,8 @@ class DatabaseSeeder extends Seeder
         }
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => env('USER_EMAIL', 'test@example.com'),
+            'name'     => 'Test User',
+            'email'    => env('USER_EMAIL', 'test@example.com'),
             'password' => env('USER_PASSWORD', 'password'),
         ]);
 

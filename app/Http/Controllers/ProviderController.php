@@ -8,8 +8,6 @@ use App\Contracts\LoginService;
 
 class ProviderController extends Controller
 {
-    protected readonly array $provider;
-
     public function callback(string $provider)
     {
 

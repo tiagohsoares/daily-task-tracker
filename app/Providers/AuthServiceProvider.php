@@ -7,7 +7,6 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
-        \App\Models\Category::class => \App\Policies\Category\CategoryPolice::class,
     ];
 
     /**

@@ -27,15 +27,15 @@
                         @endforeach
                     </select>
 
-                    <label for="Frequência" class="text-gray-700 dark:text-gray-300 font-medium">
+                    <label for="frequency" class="text-gray-700 dark:text-gray-300 font-medium">
                         Frequência:
                     </label>
-                    <select name="frequência" id="frequência" onchange="this.form.submit()"
+                    <select name="frequency" id="frequency" onchange="this.form.submit()"
                         class="w-52 sm:w-60 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 px-3 py-2 shadow-sm">
                         <option value="">Selecione a frequência</option>
-                        @foreach (App\Enums\TaskFrequency::cases() as $frequência)
-                            <option value="{{ $frequência->value }}" {{ request('frequência') === $frequência->value ? 'selected' : '' }}>
-                                {{ $frequência->name }}
+                        @foreach (App\Enums\TaskFrequency::cases() as $frequency)
+                            <option value="{{ $frequency->value }}" {{ request('frequency') === $frequency->value ? 'selected' : '' }}>
+                                {{ $frequency->name }}
                             </option>
                         @endforeach
                     </select>
@@ -133,6 +133,7 @@
                                         </div>
                                     </div>
                                 @endforeach
+                                {{ $tasks->links() }}
                             </div>
                         @endif
                     </div>
@@ -200,6 +201,4 @@
             </script>
         @endpush
     @endif
-
-
 </x-app-layout>
