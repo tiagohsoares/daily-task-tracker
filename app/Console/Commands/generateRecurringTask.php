@@ -39,7 +39,7 @@ class generateRecurringTask extends Command
             if ($nextDate) {
                 $task->update([
                     'due_date' => $nextDate,
-                    'status' => TaskStatus::pending,
+                    'status'   => TaskStatus::pending,
                 ]);
             }
         }
