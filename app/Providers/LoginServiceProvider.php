@@ -13,10 +13,10 @@ class LoginServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(LoginService::class, function (){
-            return $this->app->make(SocialiteContractService::class, 
-            [ 'config' => ['github', 'google'] ] );
-       });
+        $this->app->bind(LoginService::class, function () {
+            return $this->app->make(SocialiteContractService::class,
+                ['config' => ['github', 'google']]);
+        });
     }
 
     /**
