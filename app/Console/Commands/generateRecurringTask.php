@@ -39,12 +39,13 @@ class generateRecurringTask extends Command
             if ($nextDate) {
                 $task->update([
                     'due_date' => $nextDate,
-                    'status' => TaskStatus::pending
+                    'status' => TaskStatus::pending,
                 ]);
             }
         }
 
-        $this->info("Tarefas recorrentes atualizadas");
+        $this->info('Tarefas recorrentes atualizadas');
+
         return \Symfony\Component\Console\Command\Command::SUCCESS;
     }
 
@@ -52,20 +53,20 @@ class generateRecurringTask extends Command
     {
         $date = Carbon::parse($lastDueDate);
         switch ($taskFrequency) {
-            case TaskFrequency::daily
-            :
-                while ($date->lt(today()))
+            case TaskFrequency::daily:
+                while ($date->lt(today())) {
                     $date->addDay();
+                }
                 break;
-            case TaskFrequency::weekly
-            :
-                while ($date->lt(today()))
+            case TaskFrequency::weekly:
+                while ($date->lt(today())) {
                     $date->addWeek();
+                }
                 break;
-            case TaskFrequency::monthly
-            :
-                while ($date->lt(today()))
+            case TaskFrequency::monthly:
+                while ($date->lt(today())) {
                     $date->addMonth();
+                }
                 break;
         }
 

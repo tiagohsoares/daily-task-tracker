@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use app\Contracts\TaskService;
 use app\contracts\TaskContractService;
+use app\Contracts\TaskService;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,10 +13,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(TaskService::class, function (){
+        $this->app->bind(TaskService::class, function () {
             return $this->app->make(TaskContractService::class);
         });
     }
+
     /**
      * Bootstrap any application services.
      */
