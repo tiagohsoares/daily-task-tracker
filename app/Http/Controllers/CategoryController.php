@@ -48,7 +48,8 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = Category::where('id', $id)->where('user_id', Auth::id())->firstorFail();
+        $category = Category::whereBelongsTo('user_id', Auth::id())
+                ->where('id', $id)->firstorFail();
 
         return view('category.show', ['category' => $category]);
     }
@@ -58,7 +59,7 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        return abort(401);
+        //;
     }
 
     /**

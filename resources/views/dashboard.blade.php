@@ -200,6 +200,4 @@
             </script>
         @endpush
     @endif
-
-
 </x-app-layout>
