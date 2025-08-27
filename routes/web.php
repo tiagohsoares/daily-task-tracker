@@ -21,12 +21,13 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::resource('category', CategoryController::class);
+    Route::resource('category', CategoryController::class)
+        ->except('edit');
 });
 
 Route::middleware('auth')->group(function () {
     Route::resource('task', TaskController::class)
-        ->except('index');
+        ->except('index', 'edit');
 });
 
 require __DIR__.'/auth.php';
