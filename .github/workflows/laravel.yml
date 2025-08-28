@@ -26,6 +26,9 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
+    - name: Build Laravel Sail
+      run: ./vendor/bin/sail up -d
+      
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
