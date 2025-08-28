@@ -17,17 +17,16 @@ class TaskController extends Controller
     {
         $user  = auth()->user();
         $tasks = Task::whereBelongsTo($user)
-            ->orderBy('due_date');
+            ->orderBy('due_date')
+            ->get();
 
         if ($request->input('status')) {
             $tasks = $tasks->where('status', $request->input('status'));
         }
 
-        if ($request->input('frequency')) {
-            $tasks = $tasks->where('frequency', $request->input('frequency'));
+        if ($request->input('frequência')) {
+            $tasks = $tasks->where('frequency', $request->input('frequência'));
         }
-
-        $tasks = $tasks->paginate(4);
 
         return view('dashboard', compact(['tasks']));
     }
