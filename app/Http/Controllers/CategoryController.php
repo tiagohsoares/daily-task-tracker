@@ -25,7 +25,7 @@ class CategoryController extends Controller
      */
     public function create(): View
     {
-        return view('category.form', ['category' => new Category]);
+        return view('category.form', ['category' => new Category()]);
     }
 
     /**
@@ -36,7 +36,7 @@ class CategoryController extends Controller
         $validated = $request->validated();
 
         Category::create([
-            'name' => $validated['name'],
+            'name'    => $validated['name'],
             'user_id' => Auth::id(),
         ]);
 
@@ -48,8 +48,9 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $category = Category::whereBelongsTo('user_id', Auth::id())
-                ->where('id', $id)->firstorFail();
+        $user     = auth()->user();
+        $category = Category::whereBelongsTo($user)
+            ->where('id', $id)->firstorFail();
 
         return view('category.show', ['category' => $category]);
     }
