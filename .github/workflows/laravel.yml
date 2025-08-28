@@ -26,14 +26,6 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-        
-    - name: Laravel Sail and Node modules
-      run: |
-        ./vendor/bin/sail up -d
-        ./vendor/bin/sail shell
-        npm install
-        npm run build
-        
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
