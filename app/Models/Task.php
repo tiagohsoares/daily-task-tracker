@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Task extends Model
 {
     /** @use HasFactory<\Database\Factories\TaskFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -24,9 +25,9 @@ class Task extends Model
     ];
 
     protected $casts = [
-        'status' => TaskStatus::class,
+        'status'    => TaskStatus::class,
         'frequency' => TaskFrequency::class,
-        'due_date' => 'datetime',
+        'due_date'  => 'datetime',
     ];
 
     public function user()
