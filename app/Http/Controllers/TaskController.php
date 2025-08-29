@@ -17,6 +17,7 @@ class TaskController extends Controller
     {
         $user  = auth()->user();
         $tasks = Task::whereBelongsTo($user)
+
             ->orderBy('due_date');
 
         if ($request->input('status')) {
