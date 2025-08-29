@@ -26,6 +26,9 @@ jobs:
       
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
+      
+    - name: Sail
+      run: ./vendor/bin/sail up -d
 
     - name: Wait for MySQL
       run: |
@@ -33,11 +36,9 @@ jobs:
         echo "Waiting for database..."
         sleep 5
         done
-      
-    - name: Create Database e Sail
-      run: |
-        ./vendor/bin/sail up -d
-        ./vendor/bin/sail artisan migrate --seed
+
+    - name: Create Database MySQL 
+      run: ./vendor/bin/sail artisan migrate --seed
       
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       run: ./vendor/bin/sail test
