@@ -15,8 +15,8 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $tasks = Task::with('category')
-            ->whereBelongsTo(Auth::user())
+        $user  = auth()->user();
+        $tasks = Task::whereBelongsTo($user)
             ->orderBy('due_date')
             ->get();
 
@@ -40,7 +40,7 @@ class TaskController extends Controller
         if ($categories->isEmpty()) {
             return redirect('dashboard')->with('failed', 'Nenhuma categoria encontrada');
         } else {
-            return view('task.form', ['task' => new Task, 'categories' => $categories]);
+            return view('task.form', ['task' => new Task(), 'categories' => $categories]);
         }
     }
 
@@ -52,12 +52,12 @@ class TaskController extends Controller
         $validated = $request->validated();
 
         Task::create([
-            'title' => $validated['title'],
+            'title'       => $validated['title'],
             'description' => $validated['description'],
-            'due_date' => $validated['due_date'],
-            'status' => $validated['status'],
-            'frequency' => $validated['frequency'],
-            'user_id' => Auth::id(),
+            'due_date'    => $validated['due_date'],
+            'status'      => $validated['status'],
+            'frequency'   => $validated['frequency'],
+            'user_id'     => Auth::id(),
             'category_id' => $validated['category_id'],
         ]);
 
@@ -69,7 +69,7 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        $task = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
+        $task       = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
         $categories = Category::where('user_id', Auth::id())->get();
 
         return view('task.show', compact(['task', 'categories']));
@@ -90,11 +90,11 @@ class TaskController extends Controller
     {
         Task::where('id', $id)
             ->update([
-                'title' => $request->title,
+                'title'       => $request->title,
                 'description' => $request->description,
-                'due_date' => $request->due_date,
-                'status' => $request->status,
-                'frequency' => $request->frequency,
+                'due_date'    => $request->due_date,
+                'status'      => $request->status,
+                'frequency'   => $request->frequency,
             ]);
 
         return redirect('dashboard')->with('success', 'Tarefa atualizada');

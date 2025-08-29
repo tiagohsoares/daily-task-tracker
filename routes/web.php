@@ -9,7 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [TaskController::class, 'index'])->name('dashboard');
 });
