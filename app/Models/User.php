@@ -10,7 +10,8 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'provider',
         'provider_token',
-        'provider_refresh_token'
+        'provider_refresh_token',
     ];
 
     /**
@@ -35,7 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
         'provider_token',
-        'provider_refresh_token'
+        'provider_refresh_token',
     ];
 
     /**
@@ -47,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
