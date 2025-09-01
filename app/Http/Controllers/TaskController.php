@@ -17,8 +17,7 @@ class TaskController extends Controller
     {
         $user  = auth()->user();
         $tasks = Task::whereBelongsTo($user)
-            ->orderBy('due_date')
-            ->get();
+            ->orderBy('due_date');
 
         if ($request->input('status')) {
             $tasks = $tasks->where('status', $request->input('status'));
@@ -28,6 +27,8 @@ class TaskController extends Controller
             $tasks = $tasks->where('frequency', $request->input('frequência'));
         }
 
+        $tasks = $tasks->paginate(5);
+
         return view('dashboard', compact(['tasks']));
     }
 
@@ -36,7 +37,9 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $categories = Category::where('user_id', Auth::id())->get();
+
+        $user       = auth()->user();
+        $categories = Category::whereBelongsTo($user)->get();
         if ($categories->isEmpty()) {
             return redirect('dashboard')->with('failed', 'Nenhuma categoria encontrada');
         } else {
@@ -49,7 +52,11 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request)
     {
+        /**
+         * TODO: abort_unless($request->user()->can('store', $task), 403);.
+         */
         $validated = $request->validated();
+        $user      = Auth::user();
 
         Task::create([
             'title'       => $validated['title'],
@@ -57,7 +64,7 @@ class TaskController extends Controller
             'due_date'    => $validated['due_date'],
             'status'      => $validated['status'],
             'frequency'   => $validated['frequency'],
-            'user_id'     => Auth::id(),
+            'user_id'     => $user->id,
             'category_id' => $validated['category_id'],
         ]);
 
@@ -69,32 +76,30 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        $task       = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
-        $categories = Category::where('user_id', Auth::id())->get();
 
-        return view('task.show', compact(['task', 'categories']));
-    }
+        $user  = Auth::user();
+        $task  = Task::whereBelongsTo($user)->with('category')->findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return view('task.show', compact(['task']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TaskRequest $request, string $id)
     {
-        Task::where('id', $id)
+        /**
+         * TODO: abort_unless($request->user()->can('update', $task), 403);.
+         */
+        $validated = $request->validated();
+
+        Task::findOrFail($id)
             ->update([
-                'title'       => $request->title,
-                'description' => $request->description,
-                'due_date'    => $request->due_date,
-                'status'      => $request->status,
-                'frequency'   => $request->frequency,
+                'title'       => $validated['title'],
+                'description' => $validated['description'],
+                'due_date'    => $validated['due_date'],
+                'status'      => $validated['status'],
+                'frequency'   => $validated['frequency'],
             ]);
 
         return redirect('dashboard')->with('success', 'Tarefa atualizada');
@@ -105,6 +110,9 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
+        /**
+         * TODO: abort_unless($request->user()->can('destroy', $task), 404);.
+         */
         Task::destroy($id);
 
         return redirect('dashboard')->with('success', 'Tarefa deletada');

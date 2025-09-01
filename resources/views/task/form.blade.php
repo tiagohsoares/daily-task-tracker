@@ -28,9 +28,9 @@
                 <select name="category_id" id="category_id"
                     class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="">Selecione uma categoria</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id', $task->category_id) == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
+                    @foreach($task->category as $category)
+                        <option value="{{ $task->category_id }}" {{ old('category_id', $task->category_id) }}>
+                            {{ $task->category_name }}
                         </option>
                     @endforeach
                 </select>
