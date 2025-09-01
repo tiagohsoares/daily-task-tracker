@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\TaskFrequency;
-use App\Enums\TaskStatus;
+use App\Http\Requests\Task\TaskRequest;
 use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Enum;
 
 class TaskController extends Controller
 {
@@ -18,8 +15,8 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $tasks = Task::with("category")
-            ->whereBelongsTo(Auth::user())
+        $user  = auth()->user();
+        $tasks = Task::whereBelongsTo($user)
             ->orderBy('due_date')
             ->get();
 
@@ -27,10 +24,10 @@ class TaskController extends Controller
             $tasks = $tasks->where('status', $request->input('status'));
         }
 
-        if ($request->input('frequência')){
+        if ($request->input('frequência')) {
             $tasks = $tasks->where('frequency', $request->input('frequência'));
         }
-        
+
         return view('dashboard', compact(['tasks']));
     }
 
@@ -50,27 +47,18 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TaskRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:categories,id',
-            'description' => 'nullable|string|max:255',
-            'due_date' => 'required|date_format:Y-m-d\TH:i:s',
-            'status' => ['required', new Enum(TaskStatus::class)],
-            'frequency' => ['required', new Enum(TaskFrequency::class)],
-        ]);
-
-
+        $validated = $request->validated();
 
         Task::create([
-            'title' => $validated['title'],
+            'title'       => $validated['title'],
             'description' => $validated['description'],
-            'due_date' => $validated['due_date'],
-            'status' => $validated['status'],
-            'frequency' => $validated['frequency'],
-            'user_id' => Auth::id(),
-            'category_id' => $validated['category_id']
+            'due_date'    => $validated['due_date'],
+            'status'      => $validated['status'],
+            'frequency'   => $validated['frequency'],
+            'user_id'     => Auth::id(),
+            'category_id' => $validated['category_id'],
         ]);
 
         return redirect('dashboard')->with('success', 'Tarefa criada com sucesso!');
@@ -81,8 +69,9 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        $task = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
+        $task       = Task::where('id', $id)->where('user_id', Auth::id())->firstorFail();
         $categories = Category::where('user_id', Auth::id())->get();
+
         return view('task.show', compact(['task', 'categories']));
     }
 
@@ -101,11 +90,11 @@ class TaskController extends Controller
     {
         Task::where('id', $id)
             ->update([
-                'title' => $request->title,
+                'title'       => $request->title,
                 'description' => $request->description,
-                'due_date' => $request->due_date,
-                'status' => $request->status,
-                'frequency' => $request->frequency,
+                'due_date'    => $request->due_date,
+                'status'      => $request->status,
+                'frequency'   => $request->frequency,
             ]);
 
         return redirect('dashboard')->with('success', 'Tarefa atualizada');
@@ -117,6 +106,7 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         Task::destroy($id);
+
         return redirect('dashboard')->with('success', 'Tarefa deletada');
     }
 }
