@@ -26,8 +26,8 @@ class TaskFactory extends Factory
             'title'       => $this->faker->sentence,
             'description' => $this->faker->paragraph,
             'due_date'    => now()->addDays(rand(1, 10)),
-            'frequency'   => TaskFrequency::class,
-            'status'      => TaskStatus::class,
+            'frequency'   => $this->faker->randomElement(TaskFrequency::class),
+            'status'      => $this->faker->randomElement(TaskStatus::class),
         ];
     }
 }
