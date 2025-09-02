@@ -33,7 +33,7 @@ class Task extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(Task::class);
+        return $this->belongsTo(User::class);
     }
 
     public function category(): BelongsTo
