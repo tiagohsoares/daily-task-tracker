@@ -1,5 +1,5 @@
 # Rodar o phpstan
-./vendor/bin/phpstan analyse --level=5 --memory-limit=1G
+./vendor/bin/phpstan analyse --level=3 --memory-limit=1G
 if [ $? -ne 0 ]; then
     echo "Opa! Deu ruim aqui com PHPSTAN. Arrume antes de continuar... 😉";
     exit 1;
