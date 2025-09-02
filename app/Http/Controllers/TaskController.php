@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Task\TaskRequest;
-use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +38,8 @@ class TaskController extends Controller
     {
 
         $user       = auth()->user();
-        $categories = Category::whereBelongsTo($user)->get();
+        $categories = Task::whereBelongsTo($user)->with('category')->get();
+
         if ($categories->isEmpty()) {
             return redirect('dashboard')->with('failed', 'Nenhuma categoria encontrada');
         } else {
@@ -50,11 +50,10 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(TaskRequest $request)
+    public function store(TaskRequest $request, Task $task)
     {
-        /**
-         * TODO: abort_unless($request->user()->can('store', $task), 403);.
-         */
+        abort_unless($request->user()->can('store', $task), 403);
+
         $validated = $request->validated();
         $user      = Auth::user();
 
@@ -86,11 +85,10 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TaskRequest $request, string $id)
+    public function update(TaskRequest $request, Task $task, string $id)
     {
-        /**
-         * TODO: abort_unless($request->user()->can('update', $task), 403);.
-         */
+        abort_unless($request->user()->can('update', $task), 403);
+
         $validated = $request->validated();
 
         Task::findOrFail($id)
