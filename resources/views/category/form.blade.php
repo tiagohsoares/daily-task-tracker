@@ -19,7 +19,7 @@
                     <input type="text" name="name" id="name" value="{{ old('name', $category->name) }}" required
                         class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     @error('name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        <p class="alert alert-danger mt-1 text-sm text-red-600">{{$message}}</p>
                     @enderror
                 </div>
 
@@ -33,4 +33,3 @@
             </form>
         </div>
     </div>
-    

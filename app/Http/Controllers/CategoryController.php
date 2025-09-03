@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Category\CategoryRequest;
 use App\Models\Category;
+use App\Models\Task;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
@@ -15,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::whereBelongsTo(Auth::user())->get();
+        $user       = Auth::user();
+        $categories = Category::whereBelongsTo($user)->get();
 
         return view('category.index', compact('categories'));
     }
@@ -31,13 +32,16 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoryRequest $request)
+    public function store(CategoryRequest $request, Task $task)
     {
+        $user      = Auth::user();
         $validated = $request->validated();
-
+        /**
+         * abort_unless($user->can('store', $task), 403);.
+         */
         Category::create([
             'name'    => $validated['name'],
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
         ]);
 
         return redirect('category')->with('success', 'Categoria criada!');
@@ -48,29 +52,28 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        $user     = auth()->user();
-        $category = Category::whereBelongsTo($user)
-            ->where('id', $id)->firstorFail();
+        $user     = Auth::user();
+        $category = Category::findOrFail($id);
 
-        return view('category.show', ['category' => $category]);
-    }
+        abort_unless($user->can('show', $category), 403);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //;
+        return view('category.show', compact(['category']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $request, string $id)
     {
-        Category::where('id', $id)
+        $user     = Auth::user();
+        $category = Category::findOrFail($id);
+        abort_unless($user->can('update', $category), 403);
+
+        $validated = $request->validated();
+
+        Category::findOrFail($id)
             ->update([
-                'name' => $request->name,
+                'name' => $validated['name'],
             ]);
 
         return redirect()->intended('category')->with('success', 'Categoria atualizada!');
@@ -81,6 +84,10 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        $user     = Auth::user();
+        $category = Category::findOrFail($id);
+
+        abort_unless($user->can('destroy', $category), 403);
         Category::destroy($id);
 
         return redirect('category')->with('success', 'Categoria deletada!');

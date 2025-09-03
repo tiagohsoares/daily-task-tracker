@@ -6,8 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryRequest extends FormRequest
 {
-    protected $redirectRoute = 'dashboard';
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,7 +22,7 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:25',
         ];
     }
 }

@@ -20,13 +20,21 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::resource('category', CategoryController::class)
-        ->except('edit');
+    Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
+    Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
+    Route::post('/category/create', [CategoryController::class, 'store'])->name('category.store');
+    Route::get('/category/{category}', [CategoryController::class, 'show'])->name('category.show');
+    Route::put('/category/{category}', [CategoryController::class, 'update'])->name('category.update');
+    Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
 });
 
 Route::middleware('auth')->group(function () {
-    Route::resource('task', TaskController::class)
-        ->except('index', 'edit');
+    Route::get('/task/create', [TaskController::class, 'create'])->name('task.create');
+    Route::post('/task/create', [TaskController::class, 'store'])->name('task.store');
+    Route::get('/task/{task}', [TaskController::class, 'show'])->name('task.show');
+    Route::put('/task/{task}', [TaskController::class, 'update'])->name('task.update');
+    Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.destroy');
+
 });
 
 require __DIR__.'/auth.php';
