@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Task\TaskRequest;
+use App\Models\Category;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,8 +23,8 @@ class TaskController extends Controller
             $tasks = $tasks->where('status', $request->input('status'));
         }
 
-        if ($request->input('frequência')) {
-            $tasks = $tasks->where('frequency', $request->input('frequência'));
+        if ($request->input('frequency')) {
+            $tasks = $tasks->where('frequency', $request->input('frequency'));
         }
 
         $tasks = $tasks->paginate(5);
@@ -36,15 +37,14 @@ class TaskController extends Controller
      */
     public function create()
     {
-
         $user       = auth()->user();
-        $categories = Task::whereBelongsTo($user)->with('category')->get();
+        $categories = Category::whereBelongsTo($user)->get();
 
-        if ($categories->isEmpty()) {
-            return redirect('dashboard')->with('failed', 'Nenhuma categoria encontrada');
-        } else {
-            return view('task.form', ['task' => new Task(), 'categories' => $categories]);
-        }
+        abort_unless($categories, 403);
+
+        $tasks = Task::whereBelongsTo($user)->with('category')->get();
+
+        return view('task.form', compact('categories', 'tasks'));
     }
 
     /**
@@ -52,7 +52,6 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request, Task $task)
     {
-        abort_unless($request->user()->can('store', $task), 403);
 
         $validated = $request->validated();
         $user      = Auth::user();
@@ -76,22 +75,23 @@ class TaskController extends Controller
     public function show(string $id)
     {
 
-        $user  = Auth::user();
-        $task  = Task::whereBelongsTo($user)->with('category')->findOrFail($id);
+        $user       = Auth::user();
+        $task       = Task::whereBelongsTo($user)->findOrFail($id);
+        $categories = Category::whereBelongsTo($user)->get();
 
-        return view('task.show', compact(['task']));
+        return view('task.show', compact('task', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(TaskRequest $request, Task $task, string $id)
+    public function update(TaskRequest $request, Task $task)
     {
         abort_unless($request->user()->can('update', $task), 403);
 
         $validated = $request->validated();
 
-        Task::findOrFail($id)
+        Task::findOrFail($task)
             ->update([
                 'title'       => $validated['title'],
                 'description' => $validated['description'],
@@ -108,9 +108,8 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        /**
-         * TODO: abort_unless($request->user()->can('destroy', $task), 404);.
-         */
+        $user  = Auth::user();
+        abort_unless($user->can('destroy'), 404);
         Task::destroy($id);
 
         return redirect('dashboard')->with('success', 'Tarefa deletada');

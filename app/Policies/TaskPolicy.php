@@ -10,7 +10,7 @@ class TaskPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function store(User $user, Task $task): bool
+    public function create(User $user, Task $task): bool
     {
         return $task->user()->is($user);
     }
@@ -26,7 +26,7 @@ class TaskPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Task $task): bool
+    public function destroy(User $user, Task $task): bool
     {
         return $task->user()->is($user);
     }

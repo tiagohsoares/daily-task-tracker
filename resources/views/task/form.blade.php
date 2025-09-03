@@ -1,23 +1,21 @@
-@vite(['resources/css/app.css', 'resources/js/app.js'])
 <div class="py-12">
     <div class="max-w-xl mx-auto bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
         <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">
-            {{ $task->exists ? 'Editar' : 'Nova' }} Task
+            {{ isset($task) ? 'Editar' : 'Nova' }} Task
         </h1>
 
-        <form action="{{ $task->exists ? route('task.update', $task) : route('task.store') }}" method="POST"
+        <form action="{{ isset($task) ? route('task.update', $task->id) : route('task.store') }}" method="POST"
             class="space-y-6">
             @csrf
-            @if($task->exists)
+            @if(isset($task))
                 @method('PUT')
             @endif
 
-            {{-- Campo nome --}}
             <div>
                 <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Nome da task
                 </label>
-                <input type="text" name="title" id="title" value="{{ old('title', $task->title) }}" required
+                <input type="text" name="title" id="title" value="{{ isset($task) ? old('title', $task->title) : '' }}" required
                     class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 @error('title')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -28,9 +26,9 @@
                 <select name="category_id" id="category_id"
                     class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="">Selecione uma categoria</option>
-                    @foreach($task->category as $category)
-                        <option value="{{ $task->category_id }}" {{ old('category_id', $task->category_id) }}>
-                            {{ $task->category_name }}
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ old('id', $category->id) }}>
+                            {{ $category->name }}
                         </option>
                     @endforeach
                 </select>
@@ -38,7 +36,7 @@
                     Description
                 </label>
                 <input type="text" name="description" id="description"
-                    value="{{ old('description', $task->description) }}"
+                    value="{{ isset($task) ? old('description', $task->description) : '' }}"
                     class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 @error('description')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -47,7 +45,7 @@
                     Due Date
                 </label>
                 <input type="datetime-local" name="due_date" id="due_date"
-                    value="{{  old('due_date', $task->due_date ? \Carbon\Carbon::parse($task->due_date)->format('Y-m-d\TH:i') : now()) }}"
+                    value="{{ isset($task) ? old('due_date', $task->due_date) : now() }}"
                     required
                     class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"><br>
                 <input type="radio" id="weekly" name="frequency" value="WEEKLY">
@@ -74,7 +72,7 @@
             <div class="flex justify-end">
                 <button type="submit"
                     class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-indigo-700 shadow-sm transition">
-                    {{ $task->exists ? 'Atualizar' : 'Criar' }}
+                    {{ isset($task) ? 'Atualizar' : 'Criar' }}
                 </button>
             </div>
         </form>
