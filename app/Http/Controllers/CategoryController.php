@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Category\CategoryRequest;
 use App\Models\Category;
+use App\Models\Task;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,14 +32,13 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoryRequest $request)
+    public function store(CategoryRequest $request, Task $task)
     {
-        /**
-         * TODO: abort_unless($request->user()->can('store', $category), 403);.
-         */
         $user      = Auth::user();
         $validated = $request->validated();
-
+        /**
+         * abort_unless($user->can('store', $task), 403);.
+         */
         Category::create([
             'name'    => $validated['name'],
             'user_id' => $user->id,
@@ -53,7 +53,9 @@ class CategoryController extends Controller
     public function show(string $id)
     {
         $user     = Auth::user();
-        $category = Category::whereBelongsTo($user)->findOrFail($id);
+        $category = Category::findOrFail($id);
+
+        abort_unless($user->can('show', $category), 403);
 
         return view('category.show', compact(['category']));
     }
@@ -63,10 +65,10 @@ class CategoryController extends Controller
      */
     public function update(CategoryRequest $request, string $id)
     {
+        $user     = Auth::user();
+        $category = Category::findOrFail($id);
+        abort_unless($user->can('update', $category), 403);
 
-        /**
-         * TODO: abort_unless($request->user()->can('update', $category), 403);.
-         */
         $validated = $request->validated();
 
         Category::findOrFail($id)
@@ -82,9 +84,10 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        /**
-         * TODO: abort_unless($request->user()->can('destroy', $category), 403);.
-         */
+        $user     = Auth::user();
+        $category = Category::findOrFail($id);
+
+        abort_unless($user->can('destroy', $category), 403);
         Category::destroy($id);
 
         return redirect('category')->with('success', 'Categoria deletada!');

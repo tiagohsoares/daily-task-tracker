@@ -26,7 +26,7 @@ class TaskRequest extends FormRequest
     {
         return [
             'title'       => 'required|string|max:25',
-            'category_id' => 'nullable|exists:categories,id',
+            'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string|max:50',
             'due_date'    => [
                 'required',

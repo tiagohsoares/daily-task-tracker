@@ -30,4 +30,9 @@ class CategoryPolicy
     {
         return $category->user()->is($user);
     }
+
+    public function show(User $user, Category $category): bool
+    {
+        return $category->user()->is($user);
+    }
 }

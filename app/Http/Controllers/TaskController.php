@@ -38,13 +38,14 @@ class TaskController extends Controller
     public function create()
     {
         $user       = auth()->user();
+
         $categories = Category::whereBelongsTo($user)->get();
 
-        abort_unless($categories, 403);
+        abort_unless($categories->isNotEmpty(), 403, 'Categoria não encontrada');
 
         $tasks = Task::whereBelongsTo($user)->with('category')->get();
 
-        return view('task.form', compact('categories', 'tasks'));
+        return view('task.form', ['tasks' => $tasks, 'categories' => $categories]);
     }
 
     /**
@@ -72,11 +73,13 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Category $category)
     {
-
+        $task       = Task::findOrFail($id);
         $user       = Auth::user();
-        $task       = Task::whereBelongsTo($user)->findOrFail($id);
+
+        abort_unless($user->can('update', $task), 403);
+
         $categories = Category::whereBelongsTo($user)->get();
 
         return view('task.show', compact('task', 'categories'));
@@ -85,20 +88,22 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(TaskRequest $request, Task $task)
+    public function update(TaskRequest $request, string $id)
     {
-        abort_unless($request->user()->can('update', $task), 403);
+        $user       = Auth::user();
+        $task       = Task::findOrFail($id);
+
+        abort_unless($user->can('update', $task), 403);
 
         $validated = $request->validated();
 
-        Task::findOrFail($task)
-            ->update([
-                'title'       => $validated['title'],
-                'description' => $validated['description'],
-                'due_date'    => $validated['due_date'],
-                'status'      => $validated['status'],
-                'frequency'   => $validated['frequency'],
-            ]);
+        $task->update([
+            'title'       => $validated['title'],
+            'description' => $validated['description'],
+            'due_date'    => $validated['due_date'],
+            'status'      => $validated['status'],
+            'frequency'   => $validated['frequency'],
+        ]);
 
         return redirect('dashboard')->with('success', 'Tarefa atualizada');
     }
@@ -109,7 +114,9 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         $user  = Auth::user();
-        abort_unless($user->can('destroy'), 404);
+        $task  = Task::findOrFail($id);
+        abort_unless($user->can('destroy', $task), 403);
+
         Task::destroy($id);
 
         return redirect('dashboard')->with('success', 'Tarefa deletada');
