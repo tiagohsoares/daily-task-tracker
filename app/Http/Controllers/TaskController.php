@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\PayloadService;
 use App\Http\Requests\Task\TaskRequest;
 use App\Models\Category;
 use App\Models\Task;
@@ -17,6 +18,7 @@ class TaskController extends Controller
     {
         $user  = auth()->user();
         $tasks = Task::whereBelongsTo($user)
+            ->with(['category'])
             ->orderBy('due_date');
 
         if ($request->input('status')) {
@@ -38,14 +40,11 @@ class TaskController extends Controller
     public function create()
     {
         $user       = auth()->user();
-
         $categories = Category::whereBelongsTo($user)->get();
 
         abort_unless($categories->isNotEmpty(), 403, 'Categoria não encontrada');
 
-        $tasks = Task::whereBelongsTo($user)->with('category')->get();
-
-        return view('task.form', ['tasks' => $tasks, 'categories' => $categories]);
+        return view('task.form', ['tasks' => new Task(), 'categories' => $categories]);
     }
 
     /**
@@ -55,17 +54,8 @@ class TaskController extends Controller
     {
 
         $validated = $request->validated();
-        $user      = Auth::user();
 
-        Task::create([
-            'title'       => $validated['title'],
-            'description' => $validated['description'],
-            'due_date'    => $validated['due_date'],
-            'status'      => $validated['status'],
-            'frequency'   => $validated['frequency'],
-            'user_id'     => $user->id,
-            'category_id' => $validated['category_id'],
-        ]);
+        app(PayloadService::class, ['payload' => $validated, 'model' => 'Task'])->create($task);
 
         return redirect('dashboard')->with('success', 'Tarefa criada com sucesso!');
     }
@@ -76,7 +66,7 @@ class TaskController extends Controller
     public function show(string $id, Category $category)
     {
         $task       = Task::findOrFail($id);
-        $user       = Auth::user();
+        $user       = auth()->user();
 
         abort_unless($user->can('update', $task), 403);
 
@@ -97,15 +87,9 @@ class TaskController extends Controller
 
         $validated = $request->validated();
 
-        $task->update([
-            'title'       => $validated['title'],
-            'description' => $validated['description'],
-            'due_date'    => $validated['due_date'],
-            'status'      => $validated['status'],
-            'frequency'   => $validated['frequency'],
-        ]);
+        app(PayloadService::class, ['payload' => $validated, 'model' => 'Task'])->update($task);
 
-        return redirect('dashboard')->with('success', 'Tarefa atualizada');
+        return redirect()->back()->with('success', 'Tarefa atualizada');
     }
 
     /**
@@ -113,12 +97,13 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        $user  = Auth::user();
+        $user  = auth()->user();
         $task  = Task::findOrFail($id);
+
         abort_unless($user->can('destroy', $task), 403);
 
         Task::destroy($id);
 
-        return redirect('dashboard')->with('success', 'Tarefa deletada');
+        return redirect()->back()->with('success', 'Tarefa deletada');
     }
 }

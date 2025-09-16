@@ -11,7 +11,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
+        $this->app->singleton(LoginService::class, function () {
+            return $this->app->make(
+                SocialiteContractService::class,
+                ['config' => ['github', 'google']]
+            );
+        });
     }
 
     /**
