@@ -1,3 +1,17 @@
+# Rodar o phpstan
+./vendor/bin/phpstan analyse --level=5 --memory-limit=1G
+if [ $? -ne 0 ]; then
+    echo "Opa! Deu ruim aqui com PHPSTAN. Arrume antes de continuar... 😉";
+    exit 1;
+fi;
+
+# Rodar o phpstan
+./vendor/bin/phpstan analyse --level=5 --memory-limit=512M
+if [ $? -ne 0 ]; then
+    echo "Opa! Deu ruim aqui com PHPSTAN. Arrume antes de continuar... 😉";
+    exit 1;
+fi;
+
 # rodar os testes
 ./vendor/bin/sail artisan test --parallel
 if [ $? -ne 0 ]; then

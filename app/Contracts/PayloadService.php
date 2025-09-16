@@ -21,7 +21,7 @@ final class PayloadService
     }
     public function delete(Model $model): void
     {
-        $model->query()->destroy($this->payload);
+        $model->destroy($this->payload);
     }
     public function create(Model $model): void
     {

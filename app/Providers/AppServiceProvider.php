@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\PayloadService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,14 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(LoginService::class, function () {
-            return $this->app->make(
-                SocialiteContractService::class,
-                ['config' => ['github', 'google']]
-            );
-        });
+        $this->app->singleton(PayloadService::class);
     }
-
     /**
      * Bootstrap any application services.
      */
