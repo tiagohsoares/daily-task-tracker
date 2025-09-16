@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\PayloadService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,9 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
+        $this->app->singleton(PayloadService::class);
     }
-
     /**
      * Bootstrap any application services.
      */

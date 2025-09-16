@@ -39,7 +39,7 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/{provider}/callback', [ProviderController::class, 'callback'])
         ->name('google.callback');
 
-    Route::get('auth/{provider}/redirect', [ProviderController::class , 'redirect'])
+    Route::get('auth/{provider}/redirect', [ProviderController::class, 'redirect'])
         ->name('google.redirect');
 });
 
