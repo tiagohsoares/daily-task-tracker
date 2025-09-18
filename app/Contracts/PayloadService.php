@@ -9,19 +9,15 @@ final class PayloadService
     protected array $payload = [];
     public function __construct($payload)
     {
-        if (empty($payload['user_id'])) {
-            $payload['user_id'] = auth()->id();
-        }
-
         $this->payload = $payload;
     }
     public function update(Model $model): void
     {
-        $model->query()->update($this->payload);
+        $model->query()->find($model->id)->update($this->payload);
     }
     public function delete(Model $model): void
     {
-        $model->destroy($this->payload);
+        $model->query()->find($model->id)->destroy($this->payload);
     }
     public function create(Model $model): void
     {
