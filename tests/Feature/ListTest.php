@@ -12,7 +12,7 @@ it('should paginate all tasks from user', function () {
 
     $response = $this->get(route('dashboard'))
         ->assertViewHas(
-            'tasks', Task::whereBelongsTo($user)
+            'tasks', Task::query()->whereBelongsTo($user)
                 ->paginate(5)
         );
 });

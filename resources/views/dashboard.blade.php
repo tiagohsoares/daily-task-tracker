@@ -45,28 +45,28 @@
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
                         <h4 class="text-gray-500 dark:text-gray-300 text-sm">Total de Tarefas</h4>
                         <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-2">
-                            {{ $tasks->count() }}
+                            {{ $tasks->total() }}
                         </p>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
                         <h4 class="text-gray-500 dark:text-gray-300 text-sm">Nesta Semana</h4>
                         <p class="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
-                            {{ $tasks->where('due_date', '<', now()->addDays(8))->count() }}
+                            {{ $totalWeek }}
                         </p>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
                         <h4 class="text-gray-500 dark:text-gray-300 text-sm">Concluídas</h4>
                         <p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">
-                            {{ $tasks->where('status', 'completed')->count() }}
+                            {{ $totalCompleted }}
                         </p>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
                         <h4 class="text-gray-500 dark:text-gray-300 text-sm">Pendentes</h4>
                         <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">
-                            {{ $tasks->where('status', 'pending')->count() }}
+                            {{ $totalPending }}
                         </p>
                     </div>
                 </div>
@@ -154,10 +154,10 @@
                     datasets: [{
                         label: 'Tarefas',
                         data: [
-                                            {{ $tasks->count() }},
-                                            {{ $tasks->where('due_date', '<', now()->addDays(8))->count() }},
-                                            {{ $tasks->where('status', 'completed')->count() }},
-                            {{ $tasks->where('status', 'pending')->count() }}
+                                            {{ $tasks->total() }},
+                                            {{ $totalWeek }},
+                                            {{ $totalCompleted }},
+                            {{ $totalPending }}
                         ],
                         backgroundColor: [
                             'rgba(59, 130, 246, 0.7)',

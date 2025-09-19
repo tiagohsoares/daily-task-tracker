@@ -17,21 +17,32 @@ class TaskController extends Controller
     public function index(Request $request)
     {
         $user  = auth()->user();
-        $tasks = Task::whereBelongsTo($user)
+        $tasks = Task::query()->whereBelongsTo($user)
             ->with(['category'])
             ->orderBy('due_date');
 
-        if ($request->input('status')) {
-            $tasks = $tasks->where('status', $request->input('status'));
+        if ($request->filled('status')) {
+            $tasks = $tasks->where('status', $request->status);
+        }
+        if ($request->filled('frequency')) {
+            $tasks = $tasks->where('frequency', $request->frequency);
         }
 
-        if ($request->input('frequency')) {
-            $tasks = $tasks->where('frequency', $request->input('frequency'));
-        }
+        $totalPending = $tasks->get()->filter(function ($task) {
+            return $task->status === \App\Enums\TaskStatus::pending;
+        })->count();
 
-        $tasks = $tasks->paginate(5);
+        $totalWeek = $tasks->get()->filter(function ($task) {
+            return $task->due_date <= now()->addWeek();
+        })->count();
 
-        return view('dashboard', compact(['tasks']));
+        $totalCompleted = $tasks->get()->filter(function ($task) {
+            return $task->status === \App\Enums\TaskStatus::completed;
+        })->count();
+
+        $tasks = $tasks->paginate(5)->withQueryString();
+
+        return view('dashboard', compact(['tasks', 'totalPending', 'totalCompleted', 'totalWeek']));
     }
 
     /**
@@ -40,7 +51,7 @@ class TaskController extends Controller
     public function create()
     {
         $user       = auth()->user();
-        $categories = Category::whereBelongsTo($user)->get();
+        $categories = Category::query()->whereBelongsTo($user)->get();
 
         abort_unless($categories->isNotEmpty(), 403, 'Categoria não encontrada');
 
@@ -52,12 +63,12 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request, Task $task)
     {
+        $validated            = $request->validated();
+        $validated['user_id'] = Auth::id();
 
-        $validated = $request->validated();
+        app(PayloadService::class, ['payload' => $validated])->create($task);
 
-        app(PayloadService::class, ['payload' => $validated, 'model' => 'Task'])->create($task);
-
-        return redirect('dashboard')->with('success', 'Tarefa criada com sucesso!');
+        return redirect(route('dashboard'))->with('success', 'Tarefa criada com sucesso!');
     }
 
     /**
@@ -70,7 +81,7 @@ class TaskController extends Controller
 
         abort_unless($user->can('update', $task), 403);
 
-        $categories = Category::whereBelongsTo($user)->get();
+        $categories = Category::query()->whereBelongsTo($user)->get();
 
         return view('task.show', compact('task', 'categories'));
     }
@@ -81,15 +92,16 @@ class TaskController extends Controller
     public function update(TaskRequest $request, string $id)
     {
         $user       = Auth::user();
-        $task       = Task::findOrFail($id);
+        $task       = Task::query()->findOrFail($id);
 
         abort_unless($user->can('update', $task), 403);
 
-        $validated = $request->validated();
+        $validated            = $request->validated();
+        $validated['user_id'] = $user->id;
 
-        app(PayloadService::class, ['payload' => $validated, 'model' => 'Task'])->update($task);
+        app(PayloadService::class, ['payload' => $validated])->update($task);
 
-        return redirect()->back()->with('success', 'Tarefa atualizada');
+        return redirect(route('dashboard'))->with('success', 'Tarefa atualizada');
     }
 
     /**
@@ -98,12 +110,12 @@ class TaskController extends Controller
     public function destroy(string $id)
     {
         $user  = auth()->user();
-        $task  = Task::findOrFail($id);
+        $task  = Task::query()->findOrFail($id);
 
         abort_unless($user->can('destroy', $task), 403);
 
         Task::destroy($id);
 
-        return redirect()->back()->with('success', 'Tarefa deletada');
+        return redirect(route('dashboard'))->with('success', 'Tarefa deletada');
     }
 }

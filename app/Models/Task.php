@@ -9,11 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-// @mixin \Eloquent
-
-/**
- * @method static find(string $id)
- */
 class Task extends Model
 {
     /** @use HasFactory<\Database\Factories\TaskFactory> */
