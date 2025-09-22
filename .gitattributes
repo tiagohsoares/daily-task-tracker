@@ -1,6 +1,6 @@
 * text=auto eol=lf
 
-*.blade.php diff=html
+*.blade.php diff=html linguist-language=HTML
 *.css diff=css
 *.html diff=html
 *.md diff=markdown
@@ -9,3 +9,8 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+/vendor/* linguist-vendored
+/tests/* linguist-vendored
+/config/* linguist-vendored
+
+
