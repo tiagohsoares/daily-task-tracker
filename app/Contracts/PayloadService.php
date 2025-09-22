@@ -4,24 +4,16 @@ namespace App\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 
-final class PayloadService
+final readonly class PayloadService
 {
-    protected array $payload = [];
-    public function __construct($payload)
-    {
-        if (empty($payload['user_id'])) {
-            $payload['user_id'] = auth()->id();
-        }
-
-        $this->payload = $payload;
+    public function __construct(
+        protected array $payload
+    ) {
     }
+
     public function update(Model $model): void
     {
-        $model->query()->update($this->payload);
-    }
-    public function delete(Model $model): void
-    {
-        $model->destroy($this->payload);
+        $model->query()->find(isset($model->id))->update($this->payload);
     }
     public function create(Model $model): void
     {

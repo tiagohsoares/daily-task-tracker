@@ -19,17 +19,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        $users = User::factory(5)->create(
+        $users = User::factory(30)->create(
             [
                 'password' => 'password',
             ]
         );
 
         foreach ($users as $user) {
-            $categories = Category::factory(2)->for($user)->create();
+            $categories = Category::factory(10)->for($user)->create();
 
             foreach ($categories as $category) {
-                Task::factory()->for($user)->for($category)->state(new Sequence(
+                Task::factory(30)->for($user)->for($category)->state(new Sequence(
                     fn () => [
                         'status'    => fake()->randomElement(TaskStatus::cases()),
                         'frequency' => fake()->randomElement(TaskFrequency::cases()),
@@ -38,11 +38,19 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        User::factory()->create([
-            'name'     => 'Test User',
-            'email'    => env('USER_EMAIL', 'test@example.com'),
-            'password' => env('USER_PASSWORD', 'password'),
-        ]);
+        $user = User::factory()->
+         create([
+             'name'     => 'Test User',
+             'email'    => env('USER_EMAIL', 'test@example.com'),
+             'password' => env('USER_PASSWORD', 'password'),
+         ]);
 
+        Task::factory(30)->for($user)->state(new Sequence(
+            fn () => [
+                'user_id'   => $user->id,
+                'status'    => fake()->randomElement(TaskStatus::cases()),
+                'frequency' => fake()->randomElement(TaskFrequency::cases()),
+            ]
+        ))->create();
     }
 }

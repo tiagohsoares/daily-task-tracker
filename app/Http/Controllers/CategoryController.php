@@ -66,12 +66,12 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, string $id)
     {
         $user     = Auth::user();
-        $category = Category::findOrFail($id);
+        $category = Category::query()->findOrFail($id);
         abort_unless($user->can('update', $category), 403);
 
         $validated = $request->validated();
 
-        Category::findOrFail($id)
+        Category::query()->findOrFail($id)
             ->update([
                 'name' => $validated['name'],
             ]);
