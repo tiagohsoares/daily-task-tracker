@@ -1,3 +1,4 @@
+@vite(['resources/js/app.js', 'resources/css/app.css'])
 <x-app-layout>
     @include('shared.success-message')
 
@@ -21,7 +22,7 @@
                         class="w-52 sm:w-60 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 px-3 py-2 shadow-sm">
                         <option value="">Selecione o status</option>
                         @foreach (App\Enums\TaskStatus::cases() as $status)
-                            <option value="{{ $status->value }}" {{ request('status') === $status->value ? 'selected' : '' }}>
+                            <option value="{{ $status }}" {{ request('status') === $status->value ? 'selected' : '' }}>
                                 {{ $status->name }}
                             </option>
                         @endforeach
@@ -43,28 +44,28 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-                        <h4 class="text-gray-500 dark:text-gray-300 text-sm">Total de Tarefas</h4>
+                        <h4 class="text-gray-700 dark:text-gray-300 text-sm">Total de Tarefas</h4>
                         <p class="text-3xl font-bold text-blue-600 dark:text-blue-400 mt-2">
                             {{ $tasks->total() }}
                         </p>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-                        <h4 class="text-gray-500 dark:text-gray-300 text-sm">Nesta Semana</h4>
+                        <h4 class="text-gray-700 dark:text-gray-300 text-sm">Nesta Semana</h4>
                         <p class="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">
                             {{ $totalWeek }}
                         </p>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-                        <h4 class="text-gray-500 dark:text-gray-300 text-sm">Concluídas</h4>
+                        <h4 class="text-gray-700 dark:text-gray-300 text-sm">Concluídas</h4>
                         <p class="text-3xl font-bold text-red-600 dark:text-red-400 mt-2">
                             {{ $totalCompleted }}
                         </p>
                     </div>
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow text-center">
-                        <h4 class="text-gray-500 dark:text-gray-300 text-sm">Pendentes</h4>
+                        <h4 class="text-gray-700 dark:text-gray-300 text-sm">Pendentes</h4>
                         <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">
                             {{ $totalPending }}
                         </p>
@@ -106,12 +107,9 @@
                                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
                                                     {{ $task->title }}
                                                 </h2>
-                                                <h3 class="text-base text-gray-500 dark:text-gray-300">
-                                                    {{ $task->category->name ?? 'Sem categoria' }}
-                                                </h3>
                                             </div>
 
-                                            <span class="text-base text-gray-500">Due:
+                                            <span class="text-sm text-gray-200 bg-gray-800 shadow-sm sm:rounded-lg p-1">
                                                 {{ \Carbon\Carbon::parse($task->due_date)->format('d/m') }}</span>
                                         </div>
 
