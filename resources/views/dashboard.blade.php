@@ -1,4 +1,3 @@
-@vite(['resources/js/app.js', 'resources/css/app.css'])
 <x-app-layout>
     @include('shared.success-message')
 
